@@ -181,11 +181,14 @@ def playOne(env, model):
     s = env.reset()
     done = False
     total_reward = 0
+    iterations = 0
     
-    while not done:
+    while not done and iterations < 1000:
         
+        iterations += 1
         a = model.predict(s)
         s, reward, done, _ = env.step(a)
+        done = s[0] >= 0.5
         total_reward += reward
     
     return total_reward
@@ -203,7 +206,6 @@ def playMultiple(env, model, n_per_params):
     
     print("Time: {})".format(time.time()-start))
     mean = np.mean(rewards)
-    print(mean)
     return mean
 
 
@@ -223,6 +225,7 @@ if __name__ == "__main__":
             new_model.perturb_parameters()
         
             avg_total_rewards = playMultiple(env, new_model, 3)
+            print("Mean from epoch number {}: {}".format(i, avg_total_rewards))
             if avg_total_rewards > best_avg:
                 best_avg = avg_total_rewards
                 best_model = new_model
