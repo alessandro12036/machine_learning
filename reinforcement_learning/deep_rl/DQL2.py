@@ -90,7 +90,7 @@ class Model:
         specific_out = tf.reduce_sum(self.output * tf.one_hot(self.actions, depth=2), 
                                      axis=1) #depth hardcoded, poi cambiala
         squared_diff = tf.square(self.y-specific_out)
-        self.cost = tf.reduce_mean(squared_diff)
+        self.cost = tf.reduce_sum(squared_diff) # reduce_mean converge ovviamente più lentamente
         self.optimizer = tf.train.AdamOptimizer(learning_rate=self.lr)
         self.train_op = self.optimizer.minimize(self.cost)
     
